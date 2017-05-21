@@ -15,6 +15,7 @@ const apiBaseUrl = 'https://jusibe.com/smsapi';
  * @param {string} accessToken 
  */
 function Jusibe (publicKey, accessToken) {
+
     if(!(publicKey || accessToken)) 
         throw new Error('Invalid constructor arguments. publicKey or accessToken is defined');
     
@@ -43,6 +44,7 @@ function mergeOptions (obj1, obj2) {
  * @param {function} callback
  */
 Jusibe.prototype.makeRequest = function (options, callback) {
+    
     let requestOptions = mergeOptions(this.options, options);
     request(requestOptions, callback)
 }
@@ -53,10 +55,13 @@ Jusibe.prototype.makeRequest = function (options, callback) {
  * @return {Promise}
  */
 Jusibe.prototype.sendMessage = function (params) {
+
     let self = this;
 
     return new Promise(function (resolve, reject) {
+
         if(!params) reject(new Error('Invalid argument. params not defined'));
+
         if(!params.hasOwnProperty('to')) reject(new Error('to property not defined'));
         if(!params.hasOwnProperty('from')) reject(new Error('from property not defined'));
         if(!params.hasOwnProperty('message')) reject(new Error('message property not defined'));
@@ -80,9 +85,11 @@ Jusibe.prototype.sendMessage = function (params) {
  * @return {Promise}
  */
 Jusibe.prototype.getCredits = function() {
+
     let self = this;
 
     return new Promise(function (resolve, reject) {
+
         let options = {
             url: apiBaseUrl + '/get_credits/',
             method: 'GET',
@@ -102,9 +109,11 @@ Jusibe.prototype.getCredits = function() {
  * @return {Promise}
  */
 Jusibe.prototype.messageStatus = function(id) {
+
     let self = this;
 
     return new Promise(function (resolve, reject) {
+
         if(typeof id !== "string") reject(new Error("Invalid argument. id must be a string"))
 
         let options = {
