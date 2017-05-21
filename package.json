@@ -4,7 +4,7 @@
   "description": "A node package for jusibe.com API",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/lab -c -v -P test"
+    "test": "./node_modules/.bin/lab -v -P test"
   },
   "repository": {},
   "author": "Patrick Foh Jr",
