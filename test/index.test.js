@@ -65,6 +65,19 @@ describe('sendMessage method', function() {
                 done()
             })
     })
+
+    it('should throw an error if "to","from","message" is not defined on params', function (done) {
+        let instance = new Jusibe('a', 'b');
+        
+        instance.sendMessage({ to: "080276548321", from: "Tester"})
+            .then(function(response) {
+                done()
+            })
+            .catch(function (error) {
+                expect(error).to.be.an.error(Error);
+                done()
+            })
+    })
 })
 
 describe('messageStatus method', function() {
