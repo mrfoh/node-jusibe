@@ -1,47 +1,120 @@
 'use strict';
 
-const request = require('request');
 const Promise = require('bluebird');
+const request = require('request');
 const _ = require('lodash');
 
-//jusibe base API url
-const apiBaseUrl = "https://jusibe.com/smsapi/";
+/**
+ * Jusibe API base url
+ */
+const apiBaseUrl = 'https://jusibe.com/smsapi';
 
 /**
- * Jusibe Constructor
- * @param {String} publicKey
- * @param {String} accessToken
- * @return {jusibe}
+ * Class constructor
+ * @param {string} publicKey 
+ * @param {string} accessToken 
  */
 function Jusibe (publicKey, accessToken) {
-    if(!publicKey || !accessToken) 
-        throw new Error('Invalid arguments: publicKey and accessToken not specified');
+    if(!(publicKey || accessToken)) 
+        throw new Error('Invalid constructor arguments. publicKey or accessToken is defined');
     
-    this.requestOptions = {
+    this.options = {
         auth: {
             user: publicKey,
-            pass: accessToken,
+            pass: accessToken
         },
         json: true
     }
 }
 
-Jusibe.prototype.sendMessage = function (payload) {
-    return new Promise(function (resolve, reject) {   
-        if(!payload) reject(new Error('Invalid arguments: payload not defined'));
+/**
+ * Merge objects
+ * @param {object} obj1 
+ * @param {object} obj2 
+ * @return {object}
+ */
+function mergeOptions (obj1, obj2) {
+    return _.merge(obj1, obj2);
+}
 
-        if(!_.has(payload, 'to')) reject(new Error('"to" is not defined'))
-        if(!_.has(payload, 'from')) reject(new Error('"from" is not defined'))
-        if(!_.has(payload, 'message')) reject(new Error('"message" is not defined'))
+/**
+ * Make http request
+ * @param {object} options
+ * @param {function} callback
+ */
+Jusibe.prototype.makeRequest = function (options, callback) {
+    let requestOptions = mergeOptions(this.options, options);
+    request(requestOptions, callback)
+}
+
+/**
+ * Send SMS via Jusibe API
+ * @param {object} params
+ * @return {Promise}
+ */
+Jusibe.prototype.sendMessage = function (params) {
+    let self = this;
+
+    return new Promise(function (resolve, reject) {
+        if(!params) reject(new Error('Invalid argument. params not defined'));
+
+        let options = {
+            url: apiBaseUrl + '/send_sms',
+            method: 'POST',
+            form: params
+        }
+
+        self.makeRequest(options, function (error, response) {
+            if(error) reject(error);
+
+            resolve(response.body)
+        })
     })
 }
 
+/**
+ * Get Jubibe credit balance
+ * @return {Promise}
+ */
 Jusibe.prototype.getCredits = function() {
+    let self = this;
 
+    return new Promise(function (resolve, reject) {
+        let options = {
+            url: apiBaseUrl + '/get_credits/',
+            method: 'GET',
+        }
+
+        self.makeRequest(options, function (error, response) {
+            if(error) reject(error);
+
+            resolve(response.body)
+        })
+    })
 }
 
-Jusibe.prototype.getDeliveryStatus = function (id) {
+/**
+ * Get delivery status of message
+ * @param {string} id
+ * @return {Promise}
+ */
+Jusibe.prototype.messageStatus = function(id) {
+    let self = this;
 
+    return new Promise(function (resolve, reject) {
+        if(typeof id !== "string") reject(new Error("Invalid argument. id must be a string"))
+
+        let options = {
+            url: apiBaseUrl + '/delivery_status/' + '?message_id=' + id,
+            method: 'GET'
+        }
+
+        self.makeRequest(options, function (error, response) {
+            if(error) reject(error);
+
+            resolve(response.body)
+        })
+    })
 }
 
-module.exports = Jusibe; 
+module.exports = Jusibe;
