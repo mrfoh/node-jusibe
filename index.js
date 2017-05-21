@@ -57,6 +57,9 @@ Jusibe.prototype.sendMessage = function (params) {
 
     return new Promise(function (resolve, reject) {
         if(!params) reject(new Error('Invalid argument. params not defined'));
+        if(!params.hasOwnProperty('to')) reject(new Error('to property not defined'));
+        if(!params.hasOwnProperty('from')) reject(new Error('from property not defined'));
+        if(!params.hasOwnProperty('message')) reject(new Error('message property not defined'));
 
         let options = {
             url: apiBaseUrl + '/send_sms',
