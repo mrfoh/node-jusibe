@@ -18,7 +18,7 @@ var jusibeSDK = new Jusibe('YOUR_JUSIBE_PUBLIC_KEY', 'YOUR_JUSIBE_ACCESS_TOKEN')
 ### Send message
 ```js
 let params = {
-    to: '0803xxxxxx',
+    to: '0803XXXXXXX',
     from: 'John Doe',
     message: 'Take me to your leader'
 }

@@ -13,11 +13,11 @@ const apiBaseUrl = 'https://jusibe.com/smsapi';
  * Class constructor
  * @param {string} publicKey 
  * @param {string} accessToken 
+ * @return {void}
  */
 function Jusibe (publicKey, accessToken) {
 
-    if(!(publicKey || accessToken)) 
-        throw new Error('Invalid constructor arguments. publicKey or accessToken is defined');
+    if(!(publicKey || accessToken)) throw new Error('Invalid constructor arguments. publicKey or accessToken is defined');
     
     this.options = {
         auth: {
@@ -42,9 +42,10 @@ function mergeOptions (obj1, obj2) {
  * Make http request
  * @param {object} options
  * @param {function} callback
+ * @return {void}
  */
 Jusibe.prototype.makeRequest = function (options, callback) {
-    
+
     let requestOptions = mergeOptions(this.options, options);
     request(requestOptions, callback)
 }
